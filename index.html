@@ -1004,28 +1004,6 @@
 
     requestAnimationFrame(() => { drawStars(0); });
 
-    // ── TYPEWRITER (Quietude card only) ──
-    const lines = [
-      'Ambient soundscapes and a minimal focus timer.',
-      'Curated natural environments — rain, forest, open water.',
-      'To help you settle into deep work.',
-      'Coming when it\'s ready.',
-    ];
-    let li = 0, ci = 0, deleting = false;
-    const tw = document.getElementById('typewriter');
-
-    function tick() {
-      const line = lines[li];
-      if (!deleting) {
-        tw.textContent = line.slice(0, ++ci);
-        if (ci === line.length) { deleting = true; setTimeout(tick, 2200); return; }
-      } else {
-        tw.textContent = line.slice(0, --ci);
-        if (ci === 0) { deleting = false; li = (li + 1) % lines.length; }
-      }
-      setTimeout(tick, deleting ? 36 : 68);
-    }
-    tick();
 
     // ── ABOUT CANVAS — MORPHING CRYSTAL ──
     const ac = document.getElementById('about-canvas');
