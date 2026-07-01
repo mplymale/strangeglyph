@@ -648,9 +648,12 @@
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
-      padding: 4px;
+      padding: 12px;
       background: none;
       border: none;
+      position: relative;
+      z-index: 300;
+      touch-action: manipulation;
     }
     .nav-hamburger span {
       display: block;
@@ -668,7 +671,7 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(9,9,11,0.97);
-      z-index: 150;
+      z-index: 250;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -1156,6 +1159,9 @@
       });
     });
 
+  </script>
+
+  <script>
     // ── HAMBURGER MENU ──
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
