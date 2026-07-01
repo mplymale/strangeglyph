@@ -687,6 +687,20 @@
     }
     .mobile-menu a:hover { color: var(--violet); }
 
+    .mobile-menu-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 8px;
+      touch-action: manipulation;
+      z-index: 310;
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       nav { padding: 20px 24px; }
@@ -766,6 +780,8 @@
   </nav>
 
   <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileClose" aria-label="Close menu">✕</button>
+    <a href="#hero" class="mobile-nav-link">Home</a>
     <a href="#about" class="mobile-nav-link">About</a>
     <a href="#apps" class="mobile-nav-link">Apps</a>
     <a href="#contact" class="mobile-nav-link">Contact</a>
@@ -1168,17 +1184,21 @@
     // ── HAMBURGER MENU ──
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
+
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     hamburger.addEventListener('click', () => {
       hamburger.classList.toggle('open');
       mobileMenu.classList.toggle('open');
       document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
     });
+    document.getElementById('mobileClose').addEventListener('click', closeMobileMenu);
     document.querySelectorAll('.mobile-nav-link').forEach(a => {
-      a.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        mobileMenu.classList.remove('open');
-        document.body.style.overflow = '';
-      });
+      a.addEventListener('click', closeMobileMenu);
     });
   </script>
 </body>
