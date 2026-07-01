@@ -1081,14 +1081,15 @@
     }
 
     function resizeAC() {
-      const size = ac.parentElement.offsetWidth;
-      ac.width = ac.height = size;
+      const size = ac.parentElement.offsetWidth || ac.parentElement.getBoundingClientRect().width;
+      if (size > 0) ac.width = ac.height = size;
     }
 
     function drawCrystal(now) {
       resizeAC();
-      const t = now * 0.001;
       const w = ac.width, h = ac.height;
+      if (!w || !h) { requestAnimationFrame(drawCrystal); return; }
+      const t = now * 0.001;
 
       ax.clearRect(0, 0, w, h);
 
