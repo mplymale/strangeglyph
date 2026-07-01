@@ -647,7 +647,7 @@
       nav { padding: 20px 24px; }
       .nav-links { display: none; }
 
-      #hero { padding: 0 24px 56px; }
+      #hero { padding: 100px 24px 56px; }
       .hero-sub-row {
         flex-direction: column;
         align-items: flex-start;
@@ -916,7 +916,14 @@
 
     // wait for hero animations to finish before enabling reveals
     let revealsReady = false;
-    setTimeout(() => { revealsReady = true; }, 1600);
+    setTimeout(() => {
+      revealsReady = true;
+      reveals.forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.88) {
+          el.classList.add('visible');
+        }
+      });
+    }, 1600);
 
     requestAnimationFrame(() => { drawStars(0); });
 
