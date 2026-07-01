@@ -722,9 +722,10 @@
       footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
       .dot-nav { display: none; }
 
-      /* kill expensive blur effects on mobile */
-      #parallax-bg { display: none; }
-      #stars-canvas { display: none; }
+      /* lighter orbs on mobile */
+      .orb-1 { width: 280px; height: 280px; filter: blur(70px); }
+      .orb-2 { width: 320px; height: 320px; filter: blur(70px); }
+      .orb-3 { width: 200px; height: 200px; filter: blur(60px); }
     }
 
     /* ── REDUCED MOTION ── */
@@ -901,7 +902,8 @@
     function initStars() {
       canvas.width  = window.innerWidth;
       canvas.height = window.innerHeight;
-      stars = Array.from({ length: 240 }, () => ({
+      const starCount = window.innerWidth < 768 ? 80 : 240;
+      stars = Array.from({ length: starCount }, () => ({
         x:     Math.random() * canvas.width,
         y:     Math.random() * canvas.height,
         r:     Math.random() * 1.1 + 0.2,
