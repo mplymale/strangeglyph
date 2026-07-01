@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strange Glyph, LLC</title>
+  <meta name="description" content="Strange Glyph builds thoughtful mobile apps for curious people." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #09090b;
+      --surface: #0f0f12;
+      --border:  #1e1e24;
+      --dim:     #3f3f50;
+      --text:    #a1a1b5;
+      --hi:      #e4e4f0;
+      --font:    'Space Grotesk', system-ui, sans-serif;
+
+      /* spectrum — one per zone, used sparingly */
+      --violet: #a78bfa;
+      --cyan:   #22d3ee;
+      --lime:   #a3e635;
+      --amber:  #fbbf24;
+      --coral:  #fb7185;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── PROGRESS BAR — rainbow gradient ── */
+    .progress-bar {
+      position: fixed;
+      left: 0; top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--violet), var(--cyan), var(--lime), var(--amber), var(--coral));
+      z-index: 300;
+      transition: width 0.08s linear;
+    }
+
+    /* ── PARALLAX BG ── */
+    #parallax-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(130px);
+    }
+
+    .orb-1 {
+      width: 560px; height: 560px;
+      background: radial-gradient(circle, var(--violet), transparent 70%);
+      top: -120px; right: -80px;
+      opacity: 0.1;
+    }
+
+    .orb-2 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, var(--cyan), transparent 70%);
+      bottom: 15%; left: -220px;
+      opacity: 0.07;
+    }
+
+    .orb-3 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, var(--coral), transparent 70%);
+      top: 55%; right: 8%;
+      opacity: 0.07;
+    }
+
+    #stars-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* ── DOT NAV ── */
+    .dot-nav {
+      position: fixed;
+      right: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+
+    .dot {
+      width: 5px; height: 5px;
+      border: 1px solid var(--dim);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: var(--hi);
+      border-color: var(--hi);
+      box-shadow: 0 0 6px rgba(228,228,240,0.4);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 56px;
+      background: #09090b;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-logo img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--hi); }
+
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: unset;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 56px 64px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .prompt-line {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadein 0.8s 0.3s forwards;
+    }
+
+    .prompt-line span { color: var(--violet); }
+
+    h1.display {
+      font-size: clamp(44px, 6.5vw, 88px);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      color: var(--hi);
+      opacity: 0;
+      animation: fadein 1.2s 0.5s forwards;
+    }
+
+    h1.display .accent { color: var(--violet); }
+
+    .hero-sub-row {
+      margin-top: 48px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      opacity: 0;
+      animation: fadein 1s 1s forwards;
+    }
+
+    .hero-desc {
+      max-width: 400px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text);
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--violet);
+      color: #000;
+      border: 1px solid var(--violet);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--violet);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--dim);
+      border: 1px solid var(--dim);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      position: relative;
+      z-index: 1;
+      padding: 0;
+      opacity: 0;
+      animation: fadein 1s 1.5s forwards;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 64px;
+      background: linear-gradient(to bottom, rgba(228,228,240,0.3), transparent);
+      transform-origin: top center;
+      animation: lengthen 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes lengthen {
+      from { transform: scaleY(0.5); opacity: 0.3; }
+      to   { transform: scaleY(1);   opacity: 1; }
+    }
+
+    @keyframes fadein { to { opacity: 1; transform: none; } }
+
+    /* ── SECTION RULES ── */
+    .section-rule {
+      width: 1px;
+      height: 80px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(to bottom, transparent, rgba(228,228,240,0.25), transparent);
+    }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow::before { content: '// '; opacity: 0.4; }
+
+    .eyebrow.cyan   { color: var(--cyan); }
+    .eyebrow.amber  { color: var(--amber); }
+    .eyebrow.coral  { color: var(--coral); }
+
+    /* ── SECTION TITLES ── */
+    h2.section-title {
+      font-size: clamp(36px, 5.5vw, 72px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      color: var(--hi);
+      margin-bottom: 56px;
+    }
+
+    h2.section-title .accent-cyan   { color: var(--cyan); }
+    h2.section-title .accent-amber  { color: var(--amber); }
+    h2.section-title .accent-coral  { color: var(--coral); }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 100px 56px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .about-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+      aspect-ratio: 1;
+      max-width: 360px;
+      justify-self: center;
+    }
+
+    #about-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .about-columns p {
+      font-size: 15px;
+      line-height: 2;
+      color: var(--text);
+      font-weight: 300;
+    }
+
+    .about-columns p + p { margin-top: 24px; }
+
+    .about-aside {
+      border-top: 1px solid transparent;
+      background-image: linear-gradient(var(--bg), var(--bg)), linear-gradient(to right, var(--violet), var(--cyan), var(--lime), var(--amber), var(--coral));
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      padding-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .aside-num {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--cyan);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .aside-label {
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      padding: 80px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-section::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(228,228,240,0.25), transparent);
+    }
+
+    blockquote {
+      font-size: clamp(22px, 3.5vw, 42px);
+      font-weight: 300;
+      line-height: 1.45;
+      color: var(--hi);
+      max-width: 780px;
+      padding-left: 56px;
+    }
+
+    blockquote .accent { color: var(--lime); font-weight: 500; }
+
+    /* ── APPS ── */
+    #apps {
+      padding: 80px 56px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .apps-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 100px;
+    }
+
+    .app-card {
+      background: var(--bg);
+      padding: 44px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .app-card:hover { background: var(--surface); }
+
+    /* rainbow top-line on hover for all cards */
+    .app-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--violet), var(--cyan), var(--lime), var(--amber), var(--coral));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .app-card:hover::after { opacity: 1; }
+
+    .card-num {
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+    }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      border-radius: 13px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .app-name {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--hi);
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+
+    .app-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border: 1px solid;
+      margin-bottom: 18px;
+    }
+
+    .badge-live  { border-color: var(--amber); color: var(--amber); }
+    .badge-dev   { border-color: var(--dim);   color: var(--dim); }
+
+    .app-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--text);
+      margin-bottom: 28px;
+      min-height: 76px;
+    }
+
+    .app-link {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding-bottom: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .link-violet { color: var(--violet); border-bottom: 1px solid rgba(167,139,250,0.3); }
+    .link-violet:hover { border-color: var(--violet); }
+
+    .app-link.muted { color: var(--dim); border-bottom: 1px solid var(--border); pointer-events: none; }
+
+    .typewriter-wrap {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--text);
+      margin-bottom: 28px;
+      min-height: 76px;
+    }
+
+    #typewriter {
+      border-right: 1px solid var(--lime);
+      animation: blink 0.9s step-end infinite;
+    }
+
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 100px 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .contact-left p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 2;
+      color: var(--text);
+      margin-bottom: 40px;
+      max-width: 360px;
+    }
+
+    .contact-email {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--coral);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(251,113,133,0.3);
+      padding-bottom: 4px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .contact-email:hover {
+      color: var(--hi);
+      border-color: var(--hi);
+    }
+
+    .contact-right {
+      border-top: 1px solid var(--border);
+      padding-top: 40px;
+    }
+
+    .contact-rows { display: flex; flex-direction: column; }
+
+    .c-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--surface);
+    }
+
+    .c-key {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .c-val {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 56px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.d1 { transition-delay: 0.1s; }
+    .reveal.d2 { transition-delay: 0.2s; }
+    .reveal.d3 { transition-delay: 0.3s; }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    /* ── TABLET ── */
+    @media (max-width: 1024px) {
+      nav { padding: 24px 40px; }
+      #hero { padding: 0 40px 72px; }
+      #about { padding: 80px 40px; }
+      #apps { padding: 80px 40px 100px; }
+      #contact { padding: 80px 40px; gap: 56px; }
+      footer { padding: 24px 40px; }
+      .scroll-hint { display: none; }
+    }
+
+    /* ── TABLET: stack contact ── */
+    @media (max-width: 900px) {
+      .apps-grid { grid-template-columns: 1fr; }
+      #contact { grid-template-columns: 1fr; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+
+      #hero { padding: 0 24px 56px; }
+      .hero-sub-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 28px;
+        margin-top: 32px;
+      }
+      .hero-desc { max-width: 100%; }
+      .hero-cta { flex-direction: column; width: 100%; }
+      .btn { justify-content: center; }
+
+      #about { padding: 64px 24px; }
+      .about-columns { max-width: 100%; }
+
+      #apps { padding: 64px 24px 80px; }
+      .app-card { padding: 32px 24px; }
+      .app-desc { min-height: unset; }
+
+      #contact { padding: 64px 24px; grid-template-columns: 1fr; }
+      .contact-email { font-size: 18px; }
+
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+      .dot-nav { display: none; }
+
+      /* shrink orbs so they don't overflow */
+      .orb-1 { width: 300px; height: 300px; }
+      .orb-2 { width: 400px; height: 400px; }
+      .orb-3 { width: 200px; height: 200px; }
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <div id="parallax-bg">
+    <div class="orb orb-1" id="orb1"></div>
+    <div class="orb orb-2" id="orb2"></div>
+    <div class="orb orb-3" id="orb3"></div>
+  </div>
+  <canvas id="stars-canvas"></canvas>
+
+  <div class="dot-nav" id="dotNav">
+    <div class="dot active" data-target="hero"></div>
+    <div class="dot" data-target="about"></div>
+    <div class="dot" data-target="apps"></div>
+    <div class="dot" data-target="contact"></div>
+  </div>
+
+  <nav>
+    <a class="nav-logo" href="#"><img src="logo.png" alt="Strange Glyph"></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#apps">Apps</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <h1 class="display">
+      No meetings.<br />
+      <span class="accent">Just work.</span>
+    </h1>
+    <div class="hero-sub-row">
+      <p class="hero-desc">
+        Strange Glyph is an independent studio.
+        No roadmap by committee. No app that doesn't
+        earn its place. Just software that gets
+        the details right.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#apps">View Apps</a>
+        <a class="btn btn-ghost" href="#contact">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="eyebrow cyan reveal">About the studio</p>
+    <h2 class="section-title reveal">Small by<br /><span class="accent-cyan">design.</span></h2>
+    <div class="about-columns">
+      <div>
+
+        <p class="reveal">
+          Strange Glyph makes apps. Not decks. Not roadmaps.
+          Not alignment meetings. Apps.
+        </p>
+        <p class="reveal d1">
+          We're an independent studio, which means the person
+          who had the idea is the same person who wrote the code,
+          obsessed over the icon, and quietly changed the button
+          radius at 2am. On purpose.
+        </p>
+        <p class="reveal d2">
+          Everything ships when it's ready.
+          Which takes as long as it takes.
+        </p>
+      </div>
+      <div class="about-visual reveal d1">
+        <canvas id="about-canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-rule"></div>
+
+  <!-- APPS -->
+  <section id="apps">
+    <p class="eyebrow amber reveal">Apps</p>
+    <h2 class="section-title reveal">What we've<br /><span class="accent-amber">shipped.</span></h2>
+    <div class="apps-grid">
+
+      <div class="app-card card-1 reveal">
+        <span class="card-num">01</span>
+        <div class="card-icon" style="background:linear-gradient(135deg,#0d1b3e,#1a0a3d);box-shadow:0 0 20px rgba(100,140,255,0.15);">🌌</div>
+        <div class="app-name">ClearNight</div>
+        <span class="app-badge badge-live">Live</span>
+        <p class="app-desc">
+          Astronomy forecast for stargazers. Real sky conditions —
+          cloud cover, seeing, transparency, and Bortle estimates —
+          so you know exactly when to head out under the stars.
+        </p>
+        <a class="app-link link-violet" href="#">App Store ↗</a>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-left">
+      <p class="eyebrow coral reveal">Contact</p>
+      <h2 class="section-title reveal">Get in<br /><span class="accent-coral">touch.</span></h2>
+      <p class="reveal">
+        Press inquiries, app support, collaboration, or just
+        a curious message. The inbox is always open.
+      </p>
+      <a class="contact-email reveal" href="mailto:info@strangeglyph.com">
+        info@strangeglyph.com
+      </a>
+    </div>
+    <div class="contact-right reveal d1">
+      <div class="contact-rows">
+        <div class="c-row">
+          <span class="c-key">Entity</span>
+          <span class="c-val">Strange Glyph, LLC</span>
+        </div>
+        <div class="c-row">
+          <span class="c-key">Email</span>
+          <span class="c-val">info@strangeglyph.com</span>
+        </div>
+        <div class="c-row">
+          <span class="c-key">Location</span>
+          <span class="c-val">United States</span>
+        </div>
+        <div class="c-row">
+          <span class="c-key">Platform</span>
+          <span class="c-val">iOS &amp; Android</span>
+        </div>
+        <div class="c-row">
+          <span class="c-key">Founded</span>
+          <span class="c-val">2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Strange Glyph, LLC</span>
+    <span>Built in-house // SG:// v1.0</span>
+  </footer>
+
+  <script>
+    // ── STARS ──
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initStars() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 240 }, () => ({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height,
+        r:     Math.random() * 1.1 + 0.2,
+        o:     Math.random() * 0.5 + 0.1,
+        speed: Math.random() * 0.3 + 0.05,
+      }));
+    }
+
+    function drawStars(scrollY) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        const y = ((s.y - scrollY * s.speed * 0.4) % canvas.height + canvas.height) % canvas.height;
+        ctx.beginPath();
+        ctx.arc(s.x, y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(228,228,240,${s.o})`;
+        ctx.fill();
+      });
+    }
+
+    initStars();
+    window.addEventListener('resize', initStars);
+
+    // ── PARALLAX & SCROLL ──
+    const orb1     = document.getElementById('orb1');
+    const orb2     = document.getElementById('orb2');
+    const orb3     = document.getElementById('orb3');
+    const progress = document.getElementById('progress');
+    const dots     = document.querySelectorAll('.dot');
+    const sections = ['hero','about','apps','contact'];
+    const reveals  = document.querySelectorAll('.reveal');
+    let ticking    = false;
+
+    dots.forEach(d => d.addEventListener('click', () => {
+      document.getElementById(d.dataset.target).scrollIntoView({ behavior: 'smooth' });
+    }));
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(frame); ticking = true; }
+    }, { passive: true });
+
+    function frame() {
+      ticking = false;
+      const y   = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+
+      progress.style.width = (y / max * 100) + '%';
+
+      orb1.style.transform = `translateY(${y * 0.15}px)`;
+      orb2.style.transform = `translateY(${y * -0.08}px)`;
+      orb3.style.transform = `translateY(${y * 0.22}px)`;
+
+      drawStars(y);
+
+      let activeIndex = 0;
+      sections.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.getBoundingClientRect().top <= 80) activeIndex = i;
+      });
+      dots.forEach(d => d.classList.remove('active'));
+      dots[activeIndex].classList.add('active');
+
+      if (revealsReady) {
+        reveals.forEach(el => {
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.88) {
+            el.classList.add('visible');
+          }
+        });
+      }
+    }
+
+    // wait for hero animations to finish before enabling reveals
+    let revealsReady = false;
+    setTimeout(() => { revealsReady = true; }, 1600);
+
+    requestAnimationFrame(() => { drawStars(0); });
+
+    // ── TYPEWRITER (Quietude card only) ──
+    const lines = [
+      'Ambient soundscapes and a minimal focus timer.',
+      'Curated natural environments — rain, forest, open water.',
+      'To help you settle into deep work.',
+      'Coming when it\'s ready.',
+    ];
+    let li = 0, ci = 0, deleting = false;
+    const tw = document.getElementById('typewriter');
+
+    function tick() {
+      const line = lines[li];
+      if (!deleting) {
+        tw.textContent = line.slice(0, ++ci);
+        if (ci === line.length) { deleting = true; setTimeout(tick, 2200); return; }
+      } else {
+        tw.textContent = line.slice(0, --ci);
+        if (ci === 0) { deleting = false; li = (li + 1) % lines.length; }
+      }
+      setTimeout(tick, deleting ? 36 : 68);
+    }
+    tick();
+
+    // ── ABOUT CANVAS — MORPHING CRYSTAL ──
+    const ac = document.getElementById('about-canvas');
+    const ax = ac.getContext('2d');
+    const spectrum = ['#a78bfa','#22d3ee','#a3e635','#fbbf24','#fb7185'];
+
+    // Double-terminated pentagonal crystal — fully triangulated, no gaps
+    // 12 vertices: top apex (0), upper ring (1-5), lower ring (6-10), bottom apex (11)
+    const N = 5; // sides
+    const baseVerts = (() => {
+      const v = [];
+      v.push([0, -1.2, 0]); // 0 top apex
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2;
+        v.push([Math.cos(a) * 0.92, -0.38, Math.sin(a) * 0.92]); // upper ring
+      }
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2 + Math.PI / N; // rotated half step
+        v.push([Math.cos(a) * 0.88, 0.42, Math.sin(a) * 0.88]); // lower ring
+      }
+      v.push([0, 1.2, 0]); // 11 bottom apex
+      return v;
+    })();
+
+    // morph phases — each vertex breathes at its own rate
+    const phases = baseVerts.map((_, i) => i * 1.13);
+
+    function getMorphedVerts(t) {
+      return baseVerts.map((v, i) => {
+        const isApex = i === 0 || i === N * 2 + 1;
+        const radial = isApex ? 0 : 0.10 * Math.sin(t * 0.7 + phases[i]);
+        const dy     = isApex ? 0.12 * Math.sin(t * 0.5 + phases[i]) : 0.06 * Math.sin(t * 0.9 + phases[i] * 1.4);
+        const xz_len = Math.sqrt(v[0]*v[0] + v[2]*v[2]) || 1;
+        const scale  = 1 + radial / xz_len;
+        return [v[0] * scale, v[1] + dy, v[2] * scale];
+      });
+    }
+
+    // Fully closed edges — every face triangulated
+    const crystalEdges = [
+      // upper cap: apex → upper ring
+      [0,1],[0,2],[0,3],[0,4],[0,5],
+      // upper ring lateral
+      [1,2],[2,3],[3,4],[4,5],[5,1],
+      // body: upper ring → lower ring (2 edges per column, interleaved)
+      [1,6],[1,10],[2,6],[2,7],[3,7],[3,8],[4,8],[4,9],[5,9],[5,10],
+      // lower ring lateral
+      [6,7],[7,8],[8,9],[9,10],[10,6],
+      // lower cap: lower ring → bottom apex
+      [11,6],[11,7],[11,8],[11,9],[11,10],
+      // inner spine for that internal crystal depth
+      [0,11],
+    ];
+
+    let rotY = 0;
+
+    function rotVert([x,y,z], ry, rx) {
+      const x1 =  x*Math.cos(ry) + z*Math.sin(ry);
+      const z1 = -x*Math.sin(ry) + z*Math.cos(ry);
+      const y2 = y*Math.cos(rx) - z1*Math.sin(rx);
+      const z2 = y*Math.sin(rx) + z1*Math.cos(rx);
+      return [x1, y2, z2];
+    }
+
+    function proj([x,y,z], cx, cy, sc) {
+      const fov = 4.2;
+      const s = sc * fov / (fov + z);
+      return [cx + x*s, cy + y*s, z];
+    }
+
+    function resizeAC() {
+      const size = ac.parentElement.offsetWidth;
+      ac.width = ac.height = size;
+    }
+
+    function drawCrystal(now) {
+      resizeAC();
+      const t = now * 0.001;
+      const w = ac.width, h = ac.height;
+
+      ax.clearRect(0, 0, w, h);
+
+      rotY += 0.0008;
+      const rx = 0.65 + Math.sin(rotY * 0.41) * 0.12;
+
+      const verts = getMorphedVerts(t);
+
+      // dry-run at unit scale to measure actual extents
+      const raw = verts.map(v => proj(rotVert(v, rotY, rx), 0, 0, 1));
+      const xs  = raw.map(p => p[0]), ys = raw.map(p => p[1]);
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      const minY = Math.min(...ys), maxY = Math.max(...ys);
+      const pad  = 0.88; // keep 88% of canvas
+      const sc   = Math.min(w * pad / (maxX - minX), h * pad / (maxY - minY));
+      const cx   = w/2 - ((minX + maxX) / 2) * sc;
+      const cy   = h/2 - ((minY + maxY) / 2) * sc;
+
+      const pts = verts.map(v => proj(rotVert(v, rotY, rx), cx, cy, sc));
+      const zRange  = { min: -1.9, max: 1.9 };
+
+      const sorted = [...crystalEdges].sort((a, b) =>
+        (pts[a[0]][2] + pts[a[1]][2]) - (pts[b[0]][2] + pts[b[1]][2])
+      );
+
+      sorted.forEach(([a, b], i) => {
+        const [x1, y1, z1] = pts[a];
+        const [x2, y2, z2] = pts[b];
+        const avgZ  = (z1 + z2) / 2;
+        const depth = (avgZ - zRange.min) / (zRange.max - zRange.min);
+        const d     = Math.max(0, Math.min(1, depth));
+
+        const isFront  = d > 0.52;
+        const color    = isFront ? spectrum[i % spectrum.length] : 'rgba(228,228,240,1)';
+        const opacity  = 0.06 + d * 0.72;
+        const lw       = isFront ? 1.2 : 0.5;
+
+        ax.beginPath();
+        ax.moveTo(x1, y1);
+        ax.lineTo(x2, y2);
+        ax.strokeStyle = color;
+        ax.globalAlpha = opacity;
+        ax.lineWidth   = lw;
+        ax.stroke();
+      });
+
+      ax.globalAlpha = 1;
+
+      // vertex dots — front faces only
+      pts.forEach(([x, y, z]) => {
+        const d = Math.max(0, Math.min(1, (z - zRange.min) / (zRange.max - zRange.min)));
+        if (d < 0.42) return;
+        ax.beginPath();
+        ax.arc(x, y, 1.6, 0, Math.PI * 2);
+        ax.fillStyle = `rgba(228,228,240,${d * 0.6})`;
+        ax.fill();
+      });
+
+      requestAnimationFrame(drawCrystal);
+    }
+
+    new ResizeObserver(resizeAC).observe(ac.parentElement);
+    requestAnimationFrame(drawCrystal);
+
+    // ── SMOOTH ANCHORS ──
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+  </script>
+</body>
+</html>
