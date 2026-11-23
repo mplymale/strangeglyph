@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Strange Glyph, LLC</title>
   <meta name="description" content="Strange Glyph builds thoughtful mobile apps for curious people." />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#09090b" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -534,7 +540,9 @@
     .app-hero .card-num { color: rgba(255,255,255,0.35); top: 22px; right: 26px; }
     .ah-text { padding-bottom: 56px; }
     .ah-top { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
-    .ah-icon { width: 52px; height: 52px; border-radius: 12px; display: block; box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+    /* App Store icon shape: rounded square at ~22.4% radius */
+    .ah-icon { width: 56px; height: 56px; border-radius: 22.4%; display: block; object-fit: cover;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35), inset 0 0 0 0.5px rgba(255,255,255,0.12); }
     .ah-name { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.1; }
     .ah-badge { display: inline-block; margin-top: 5px; font-size: 9.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
       padding: 2px 8px; border: 1px solid currentColor; border-radius: 999px; }
