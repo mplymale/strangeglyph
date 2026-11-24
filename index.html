@@ -11,6 +11,20 @@
   <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <meta name="theme-color" content="#09090b" />
+  <link rel="canonical" href="https://strangeglyph.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Strange Glyph" />
+  <meta property="og:url" content="https://strangeglyph.com/" />
+  <meta property="og:title" content="Strange Glyph — Strange little apps. On purpose." />
+  <meta property="og:description" content="An independent studio building focused mobile apps for niche obsessions: the night sky, dive gear, and calm puzzles." />
+  <meta property="og:image" content="https://strangeglyph.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Strange Glyph wordmark with the line: Strange little apps. On purpose." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Strange Glyph — Strange little apps. On purpose." />
+  <meta name="twitter:description" content="An independent studio building focused mobile apps for niche obsessions: the night sky, dive gear, and calm puzzles." />
+  <meta name="twitter:image" content="https://strangeglyph.com/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -738,6 +752,11 @@
       #contact { grid-template-columns: 1fr; }
     }
 
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--dim); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover, .footer-links a:focus-visible { color: var(--hi); }
+    @media (max-width: 768px) { .footer-links { justify-content: center; } }
+
     /* ── HAMBURGER ── */
     .nav-hamburger {
       display: none;
@@ -870,7 +889,7 @@
       <li><a href="#apps">Apps</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
     </button>
   </nav>
@@ -886,15 +905,14 @@
   <!-- HERO -->
   <section id="hero">
     <h1 class="display">
-      No meetings.<br />
-      <span class="accent">Just work.</span>
+      Strange little<br />
+      <span class="accent">apps. On&nbsp;purpose.</span>
     </h1>
     <div class="hero-sub-row">
       <p class="hero-desc">
-        Strange Glyph is an independent studio.
-        No roadmap by committee. No app that doesn't
-        earn its place. Just software that gets
-        the details right.
+        An independent studio building focused mobile apps
+        for niche obsessions: the night sky, dive gear,
+        and calm puzzles.
       </p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#apps">View Apps</a>
@@ -916,8 +934,8 @@
       <div>
 
         <p class="reveal">
-          Strange Glyph makes apps. Not decks. Not roadmaps.
-          Not alignment meetings. Apps.
+          No meetings. Just work. Strange Glyph makes apps.
+          Not decks. Not roadmaps. Not alignment meetings. Apps.
         </p>
         <p class="reveal d1">
           We're an independent studio, which means the person
@@ -941,7 +959,7 @@
   <!-- APPS -->
   <section id="apps">
     <p class="eyebrow amber reveal">Apps</p>
-    <h2 class="section-title reveal">What we've<br /><span class="accent-amber">shipped.</span></h2>
+    <h2 class="section-title reveal">What we<br /><span class="accent-amber">make.</span></h2>
     <div class="apps-grid">
 
       <article class="app-hero ah-clearnight reveal">
@@ -1035,7 +1053,7 @@
         </div>
         <div class="c-row">
           <span class="c-key">Platform</span>
-          <span class="c-val">iOS &amp; Android</span>
+          <span class="c-val">iOS</span>
         </div>
         <div class="c-row">
           <span class="c-key">Founded</span>
@@ -1047,6 +1065,7 @@
 
   <footer>
     <span>© 2026 Strange Glyph, LLC</span>
+    <span class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></span>
     <span>Built in-house // SG:// v1.0</span>
   </footer>
 
@@ -1306,6 +1325,7 @@
 
     function closeMobileMenu() {
       hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
       mobileMenu.classList.remove('open');
       document.body.style.overflow = '';
     }
@@ -1314,6 +1334,7 @@
       hamburger.classList.toggle('open');
       mobileMenu.classList.toggle('open');
       document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+      hamburger.setAttribute('aria-expanded', mobileMenu.classList.contains('open') ? 'true' : 'false');
     });
     document.getElementById('mobileClose').addEventListener('click', closeMobileMenu);
     document.querySelectorAll('.mobile-nav-link').forEach(a => {
